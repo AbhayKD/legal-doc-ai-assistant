@@ -35,3 +35,6 @@ pgdata/
 # Internal data generation scripts
 scripts/generate-usage-data.py
 INTERVIEW_PREP.md
+CODE_WALKTHROUGH.md
+CODE_WALKTHROUGH.pdf
+INTERVIEW_PREP.pdf
