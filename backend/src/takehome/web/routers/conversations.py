@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from takehome.db.session import get_session
+from takehome.schemas.conversations import (
+    ConversationDetail,
+    ConversationListItem,
+    ConversationUpdate,
+    DocumentInfo,
+)
 from takehome.services.conversation import (
     create_conversation,
     delete_conversation,
@@ -16,51 +19,6 @@ from takehome.services.conversation import (
 )
 
 router = APIRouter(prefix="/api/conversations", tags=["conversations"])
-
-
-# --------------------------------------------------------------------------- #
-# Schemas
-# --------------------------------------------------------------------------- #
-
-
-class DocumentInfo(BaseModel):
-    id: str
-    filename: str
-    page_count: int
-    uploaded_at: datetime
-
-    model_config = {"from_attributes": True}
-
-
-class ConversationListItem(BaseModel):
-    id: str
-    title: str
-    created_at: datetime
-    updated_at: datetime
-    has_document: bool
-    document_count: int
-
-    model_config = {"from_attributes": True}
-
-
-class ConversationDetail(BaseModel):
-    id: str
-    title: str
-    created_at: datetime
-    updated_at: datetime
-    has_document: bool
-    document_count: int
-    documents: list[DocumentInfo] = []
-
-    model_config = {"from_attributes": True}
-
-
-class ConversationCreate(BaseModel):
-    pass
-
-
-class ConversationUpdate(BaseModel):
-    title: str
 
 
 # --------------------------------------------------------------------------- #

@@ -1,7 +1,7 @@
 """Tests for citation parsing and validation."""
 
 
-from takehome.services.llm import (
+from takehome.services.citations import (
     ParsedCitation,
     normalize_name,
     parse_citations,

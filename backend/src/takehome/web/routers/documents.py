@@ -1,36 +1,20 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import FileResponse
 
 from takehome.db.session import get_session
+from takehome.schemas.documents import DocumentOut
 from takehome.services.conversation import get_conversation
 from takehome.services.document import get_document, get_documents_for_conversation, upload_document
 
 logger = structlog.get_logger()
 
 router = APIRouter(tags=["documents"])
-
-
-# --------------------------------------------------------------------------- #
-# Schemas
-# --------------------------------------------------------------------------- #
-
-
-class DocumentOut(BaseModel):
-    id: str
-    conversation_id: str
-    filename: str
-    page_count: int
-    uploaded_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 # --------------------------------------------------------------------------- #

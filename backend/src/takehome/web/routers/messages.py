@@ -2,30 +2,23 @@ from __future__ import annotations
 
 import json
 from collections.abc import AsyncIterator
-from datetime import datetime
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import StreamingResponse
 
 from takehome.db.models import Citation, Document, Message
 from takehome.db.session import get_session
+from takehome.schemas.messages import CitationOut, MessageCreate, MessageOut
+from takehome.services.citations import normalize_name, parse_citations, validate_citations
 from takehome.services.conversation import get_conversation, update_conversation
 from takehome.services.document import (
     get_document_pages_for_conversation,
     get_documents_for_conversation,
 )
-from takehome.services.llm import (
-    normalize_name,
-    chat_with_documents,
-    generate_report,
-    generate_title,
-    parse_citations,
-    validate_citations,
-)
+from takehome.services.llm import chat_with_documents, generate_report, generate_title
 from takehome.services.retrieval import retrieve_context
 
 logger = structlog.get_logger()
@@ -36,33 +29,6 @@ router = APIRouter(tags=["messages"])
 # --------------------------------------------------------------------------- #
 # Schemas
 # --------------------------------------------------------------------------- #
-
-
-class CitationOut(BaseModel):
-    id: str
-    document_id: str
-    document_name: str
-    page_number: int
-    clause: str | None
-
-    model_config = {"from_attributes": True}
-
-
-class MessageOut(BaseModel):
-    id: str
-    conversation_id: str
-    role: str
-    content: str
-    sources_cited: int
-    message_type: str = "chat"
-    citations: list[CitationOut] = []
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
-
-
-class MessageCreate(BaseModel):
-    content: str
 
 
 # --------------------------------------------------------------------------- #
